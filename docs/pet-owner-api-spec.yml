@@ -1,8 +1,0 @@
-openapi: '3.0.2'
-info:
-  title: Sample Pet Adoption Agency
-  description: This is a sample API for an agency that tracks pets adopted by owners.
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.1
