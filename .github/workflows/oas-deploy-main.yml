@@ -1,0 +1,27 @@
+name: OpenAPI Spec Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-to-anypoint-platform:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the source code
+      - name: "Checkout Source Code"
+        uses: actions/checkout@v2
+      
+      # Install nodejs 16
+      - name: "Install Node.js"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Install Anypoint CLI and relevant plugins
+      - name: "Install Anypoint CLI"
+        run: | 
+          npm install -g anypoint-cli-v4
+          anypoint-cli-v4 plugins:install anypoint-cli-account-plugin
+          anypoint-cli-v4 plugins:install anypoint-cli-designcenter-plugin
