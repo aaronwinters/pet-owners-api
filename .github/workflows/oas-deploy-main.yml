@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - docs
 
 jobs:
   deploy-to-anypoint-platform:
@@ -25,8 +27,9 @@ jobs:
           npm install -g anypoint-cli-v4
           anypoint-cli-v4 plugins:install anypoint-cli-account-plugin
           anypoint-cli-v4 plugins:install anypoint-cli-designcenter-plugin
-
-      # Verify Anypoint CLI installation
-      - run: |
           anypoint-cli-v4 --version
           anypoint-cli-v4 plugins --core
+
+      # Upload OpenAPI spec
+      - name: Upload OpenAPI Spec to Anypoint Design Center
+        run: anypoint-cli-v4 designcenter:project:upload --client_id ${{secrets.ANYPOINT_CONNECTED_APP_ID}} --client_secret ${{secret.ANYPOINT_CONNECTED_APP_SECRET}} --organization ${{secret.ANYPOINT_ORG_ID}} pet-owners-api ./docs
