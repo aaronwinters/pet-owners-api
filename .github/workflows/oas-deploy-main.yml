@@ -32,4 +32,4 @@ jobs:
 
       # Upload OpenAPI spec
       - name: Upload OpenAPI Spec to Anypoint Design Center
-        run: anypoint-cli-v4 designcenter:project:upload --client_id ${{secrets.ANYPOINT_CONNECTED_APP_ID}} --client_secret ${{secret.ANYPOINT_CONNECTED_APP_SECRET}} --organization ${{secret.ANYPOINT_ORG_ID}} pet-owners-api ./docs
+        run: anypoint-cli-v4 designcenter:project:upload --client_id ${{secrets.ANYPOINT_CONNECTED_APP_ID}} --client_secret ${{secrets.ANYPOINT_CONNECTED_APP_SECRET}} --organization ${{secrets.ANYPOINT_ORG_ID}} pet-owners-api ./docs
