@@ -25,3 +25,8 @@ jobs:
           npm install -g anypoint-cli-v4
           anypoint-cli-v4 plugins:install anypoint-cli-account-plugin
           anypoint-cli-v4 plugins:install anypoint-cli-designcenter-plugin
+
+      # Verify Anypoint CLI installation
+      - run: |
+          anypoint-cli-v4 --version
+          anypoint-cli-v4 plugins --core
