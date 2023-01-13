@@ -1,0 +1,43 @@
+name: OpenAPI Spec Retrieve from Anypoint
+on:
+  workflow_dispatch:
+
+env:
+  BRANCH_TO_MERGE = oasSync/anypoint-download-
+
+jobs:
+  retrieve-from-anypoint-platform:
+    runs-on: ubuntu-latest
+      steps:
+        # Checkout the source code
+        - name: "Checkout Source Code"
+          uses: actions/checkout@v2
+
+        # Create new branch starting with 'oasSync/anypoint-download'
+        - name: Create Temporary Branch
+          run: git checkout -b $BRANCH_TO_MERGE
+
+        # Install nodejs 16
+        - name: "Install Node.js"
+          uses: actions/setup-node@v3
+          with:
+            node-version: 16
+  
+        # Install Anypoint CLI and relevant plugins
+        - name: "Install Anypoint CLI"
+          run: | 
+            npm install -g anypoint-cli-v4
+            anypoint-cli-v4 plugins:install anypoint-cli-account-plugin
+            anypoint-cli-v4 plugins:install anypoint-cli-designcenter-plugin
+            anypoint-cli-v4 --version
+            anypoint-cli-v4 plugins --core
+  
+        # Download OpenAPI spec
+        - name: Upload OpenAPI Spec to Anypoint Design Center
+          run: anypoint-cli-v4 designcenter:project:download --client_id ${{secrets.ANYPOINT_CONNECTED_APP_ID}} --client_secret ${{secrets.ANYPOINT_CONNECTED_APP_SECRET}} --organization ${{secrets.ANYPOINT_ORG_ID}} pet-owners-api ./docs/oas
+
+        # Create new pull request
+        - name: Create Pull Request
+          run: gh pr create -B main -H $BRANCH_TO_MERGE --title '$BRANCH_TO_MERGE into main' --body 'Created by GitHub action'
+          env:
+            GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
