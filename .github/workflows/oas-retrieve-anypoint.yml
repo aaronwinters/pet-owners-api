@@ -28,7 +28,7 @@ jobs:
       # Save temporary branch name as environment variable
       - name: Set Temporary Branch Name
         id: dateTime
-        run:  echo "branch_name=oasSync/anypoint-download-$(date +'%Y-%m-%d:%H:%M:%S')" >> $GITHUB_ENV
+        run:  echo "branch_name=oasSync/anypoint-download-$(date +'%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
       
       # Create new branch starting with 'oasSync/anypoint-download'
       - name: Create Temporary Branch
