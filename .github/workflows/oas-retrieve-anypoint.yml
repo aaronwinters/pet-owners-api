@@ -6,25 +6,6 @@ jobs:
   retrieve-from-anypoint-platform:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the source code
-      - name: "Checkout Source Code"
-        uses: actions/checkout@v2
-      
-      # Get date and time
-      - name: Get Current Date & Time
-        id: dateTime
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d:%H:%M:%S')"
-      
-      # Create temp branch name
-      - name: Generate Temporary Branch Name
-        run: echo $TAG_NAME - $RELEASE_NAME
-        env:
-          BRANCH_TO_MERGE = oasSync/anypoint-download-${{ steps.date.outputs.dateTime }}
-      
-      # Create new branch starting with 'oasSync/anypoint-download'
-      - name: Create Temporary Branch
-        run: git checkout -b $BRANCH_TO_MERGE
-      
       # Install nodejs 16
       - name: "Install Node.js"
         uses: actions/setup-node@v3
@@ -40,24 +21,41 @@ jobs:
           anypoint-cli-v4 --version
           anypoint-cli-v4 plugins --core
 
+      # Checkout the source code
+      - name: "Checkout Source Code"
+        uses: actions/checkout@v2
+      
+      # Save temporary branch name as environment variable
+      - name: Set Temporary Branch Name
+        id: dateTime
+        run:  echo "branch_name=oasSync/anypoint-download-$(date +'%Y-%m-%d:%H:%M:%S')" >> $GITHUB_ENV
+      
+      # Create new branch starting with 'oasSync/anypoint-download'
+      - name: Create Temporary Branch
+        run: git checkout -b $${{ env.branch_name }}
+
       # Download OpenAPI spec
-      - name: Upload OpenAPI Spec to Anypoint Design Center
+      - name: Download OpenAPI Spec from Anypoint Design Center
         run: anypoint-cli-v4 designcenter:project:download --client_id ${{secrets.ANYPOINT_CONNECTED_APP_ID}} --client_secret ${{secrets.ANYPOINT_CONNECTED_APP_SECRET}} --organization ${{secrets.ANYPOINT_ORG_ID}} pet-owners-api ./docs/oas
+      
       # Configure Git for commits
       - name: Initialize mandatory git config
         run: |
          git config user.name "GitHub Actions"
          git config user.email noreply@github.com
+      
       # Commit changes and push to origin
-      - name: Commit changelog and manifest files
+      - name: Commit Changes
         id: make-commit
         run: |
           git add .
           git commit --message "Adding changes retrieved from Anypoint platform"
           echo "::set-output name=commit::$(git rev-parse HEAD)"
+      
       # Create new pull request
       - name: Create Pull Request
-        run: gh pr create -B main -H $BRANCH_TO_MERGE --title '$BRANCH_TO_MERGE into main' --body 'Created by GitHub action'
+        run: gh pr create -B main -H $${{ env.branch_name }} --title '$${{ env.branch_name }} into main' --body 'Created by GitHub Action'
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      
       # Merge pull request and delete temporary branch
