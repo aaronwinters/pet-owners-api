@@ -51,6 +51,7 @@ jobs:
           git add .
           git commit --message "Adding changes retrieved from Anypoint platform"
           echo "::set-output name=commit::$(git rev-parse HEAD)"
+          git push origin ${{ env.branch_name }}
       
       # Create new pull request
       - name: Create Pull Request
