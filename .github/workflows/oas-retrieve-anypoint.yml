@@ -73,3 +73,5 @@ jobs:
       # Merge pull request and delete temporary branch
       - name: Merge Pull Request and Delete Temporary Branch
         run: gh pr merge ${{env.pr_number}} --rebase --delete-branch
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
