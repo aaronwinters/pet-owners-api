@@ -10,9 +10,21 @@ on:
       - docs/oas
 
 jobs:
+  print-conditionals:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - uses actions/checkout@v2
+
+      # Print github event check
+      - run: echo ${{github.event.pull_request.merged}}
+
+      # Print github head ref check
+      - run echo ${{!startsWith(github.head_ref, 'oasSync/anypoint-download'}}
+      
   deploy-to-anypoint-platform:
     # check if pull request was merged & ignore branches that begin with oasSync/anypoint-download
-    if: ${{ github.event.pull_request.merged == true && !startsWith(github.head_ref, 'oasSync/anypoint-download') }}
+    if: ${{ (github.event.pull_request.merged == true) && (!startsWith(github.head_ref, 'oasSync/anypoint-download')) }}
     runs-on: ubuntu-latest
     steps:
       # Checkout the source code
