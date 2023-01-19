@@ -6,7 +6,7 @@ info:
 paths:
   /owners/{ownerId}:
     get:
-      summary: Info for a specific owner
+      summary: Get info for a specific owner
       operationId: showOwnerById
       tags:
         - owners
@@ -30,7 +30,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /owners:
     post:
-      summary: Add a new owner
+      summary: Create a new owner
       operationId: addOwner
       tags:
         - owners
