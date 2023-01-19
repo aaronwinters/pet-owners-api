@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   version: 1.0.0
   title: pet-owners-api
-  description: This is a sample API for an agency that tracks owners and their pets. This API is used to update and get information from the system tracking agency consituents.
+  description: This is a sample API for an agency that tracks owners and their pets. This API is used to update and get information from the system tracking pet owner relationships.
 paths:
   /owners/{ownerId}:
     get:
